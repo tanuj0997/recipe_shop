@@ -7,7 +7,7 @@ class Cart(models.Model):
     """
     Derived from the "carts" table in the assignment spec
     """
-    total_in_cents = models.IntegerField()
+    total_in_cents = models.IntegerField(default=0)
 
 
 class CartItems(models.Model):

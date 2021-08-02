@@ -8,5 +8,9 @@ class Recipe(models.Model):
 
 
 class RecipeProduct(models.Model):
+    """
+    This model is used to store the ingredients (i.e. associated products)
+    of a recipe.
+    """
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

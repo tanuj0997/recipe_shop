@@ -9,6 +9,7 @@ services:
             python manage.py loaddata products/fixtures/product_fixtures.json &&
             python manage.py loaddata recipes/fixtures/recipe_fixtures.json &&
             python manage.py loaddata recipes/fixtures/recipe_product_fixtures.json &&
+            python manage.py createcart &&
             python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
