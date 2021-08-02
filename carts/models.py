@@ -15,5 +15,7 @@ class CartItems(models.Model):
     Derived from the "cart_items" table in the assignment spec
     """
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, null=True, blank=True)
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, null=True, blank=True)
