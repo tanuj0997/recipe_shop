@@ -1,11 +1,12 @@
-import rest_framework
-from rest_framework.views import APIView
+from collections import OrderedDict
+
 from .models import CartItems, Cart
 from recipes.models import Recipe
 from .serializers import CartItemsSerializer, CartSerializer
+
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from collections import OrderedDict
 
 
 class CartItemsListView(APIView):
@@ -58,3 +59,35 @@ class AddItemToCartView(APIView):
         # creating a new line item
         CartItems.objects.create(cart=cart, recipe=recipe)
         return Response({"Recipe added to cart"}, status.HTTP_200_OK)
+
+
+class DeleteRecipeFromCartView(APIView):
+    """
+    View to delete a recipe from a cart
+    """
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            cart = Cart.objects.get(pk=kwargs.get('cart_id'))
+        except Cart.DoesNotExist:
+            return Response({"This cart does not exist"},
+                            status.HTTP_404_NOT_FOUND)
+        recipe_id = kwargs.get('recipe_id')
+        try:
+            recipe = Recipe.objects.get(pk=recipe_id)
+        except Recipe.DoesNotExist:
+            return Response({"This recipe does not exist"},
+                            status.HTTP_404_NOT_FOUND)
+
+        # finding instances of recipe in cart
+        recipes_in_cart = CartItems.objects.filter(cart=cart, recipe=recipe)
+        if recipes_in_cart.exists():
+            recipes_in_cart[0].delete()
+        else:
+            return Response({"This recipe does not exist in this cart"},
+                            status.HTTP_404_NOT_FOUND)
+
+        # updating price of cart
+        cart.total_in_cents -= recipe.price_in_cents
+        cart.save()
+        return Response({"Recipe removed from cart"}, status.HTTP_200_OK)
