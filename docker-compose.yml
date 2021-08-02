@@ -1,14 +1,14 @@
-web:
-  build: .
-  volumes:
-    - .:/app
-migration:
-  extends:
-    service: web
-  command: python manage.py migrate
-runserver:
-  extends:
-    service: web
-  command: python manage.py runserver 0.0.0.0:8000
-  ports:
-    - "8000:8000"
+version: "3.9"
+services:
+  web:
+    build: .
+    volumes:
+      - .:/app
+    command: >
+      sh -c "python manage.py migrate &&
+            python manage.py loaddata products/fixtures/product_fixtures.json &&
+            python manage.py loaddata recipes/fixtures/recipe_fixtures.json &&
+            python manage.py loaddata recipes/fixtures/recipe_product_fixtures.json &&
+            python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"

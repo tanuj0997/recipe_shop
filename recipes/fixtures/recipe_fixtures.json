@@ -1,0 +1,18 @@
+[
+{
+    "model": "recipes.recipe",
+    "pk": 1,
+    "fields": {
+        "name": "Pizza",
+        "price_in_cents": 130
+    }
+},
+{
+    "model": "recipes.recipe",
+    "pk": 2,
+    "fields": {
+        "name": "Pasta",
+        "price_in_cents": 215
+    }
+}
+]
