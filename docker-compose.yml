@@ -1,0 +1,14 @@
+web:
+  build: .
+  volumes:
+    - .:/app
+migration:
+  extends:
+    service: web
+  command: python manage.py migrate
+runserver:
+  extends:
+    service: web
+  command: python manage.py runserver 0.0.0.0:8000
+  ports:
+    - "8000:8000"
