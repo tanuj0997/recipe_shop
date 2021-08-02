@@ -15,6 +15,8 @@ class CartItems(models.Model):
     Derived from the "cart_items" table in the assignment spec
     """
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+
+    # preserving the existing product field, not covered in current scope
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, null=True, blank=True)
     recipe = models.ForeignKey(

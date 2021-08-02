@@ -4,6 +4,8 @@ from .models import CartItems, Cart
 from recipes.models import Recipe
 from .serializers import CartItemsSerializer, CartSerializer
 
+from django.db import transaction
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -52,12 +54,14 @@ class AddItemToCartView(APIView):
             return Response({"This recipe does not exist"},
                             status.HTTP_404_NOT_FOUND)
 
-        # updating price of cart
-        cart.total_in_cents += recipe.price_in_cents
-        cart.save()
+        with transaction.atomic():
+            # creating a new line item
+            CartItems.objects.create(cart=cart, recipe=recipe)
 
-        # creating a new line item
-        CartItems.objects.create(cart=cart, recipe=recipe)
+            # updating price of cart
+            cart.total_in_cents += recipe.price_in_cents
+            cart.save()
+
         return Response({"Recipe added to cart"}, status.HTTP_200_OK)
 
 
@@ -81,13 +85,14 @@ class DeleteRecipeFromCartView(APIView):
 
         # finding instances of recipe in cart
         recipes_in_cart = CartItems.objects.filter(cart=cart, recipe=recipe)
-        if recipes_in_cart.exists():
-            recipes_in_cart[0].delete()
-        else:
-            return Response({"This recipe does not exist in this cart"},
-                            status.HTTP_404_NOT_FOUND)
+        with transaction.atomic():
+            if recipes_in_cart.exists():
+                recipes_in_cart[0].delete()
+            else:
+                return Response({"This recipe does not exist in this cart"},
+                                status.HTTP_404_NOT_FOUND)
 
-        # updating price of cart
-        cart.total_in_cents -= recipe.price_in_cents
-        cart.save()
+            # updating price of cart
+            cart.total_in_cents -= recipe.price_in_cents
+            cart.save()
         return Response({"Recipe removed from cart"}, status.HTTP_200_OK)

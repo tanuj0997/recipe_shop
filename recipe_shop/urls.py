@@ -6,10 +6,11 @@ from carts.views import CartItemsListView, AddItemToCartView, DeleteRecipeFromCa
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('recipes/', ListRecipeView.as_view()),
-    path('carts/<int:pk>/', CartItemsListView.as_view()),
-    path('carts/<int:pk>/add_recipe/', AddItemToCartView.as_view()),
+    path('recipes/', ListRecipeView.as_view(), name='recipe-list'),
+    path('carts/<int:pk>/', CartItemsListView.as_view(), name='cart-details'),
+    path('carts/<int:pk>/add_recipe/',
+         AddItemToCartView.as_view(), name='add-recipe'),
     path('carts/<int:cart_id>/recipes/<int:recipe_id>/',
-         DeleteRecipeFromCartView.as_view())
+         DeleteRecipeFromCartView.as_view(), name='delete-recipe')
 
 ]

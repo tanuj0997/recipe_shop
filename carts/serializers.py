@@ -7,6 +7,7 @@ from recipes.serializers import RecipeSerializer
 
 class CartItemsSerializer(ModelSerializer):
 
+    # preserving the existing field, not covered in current scope
     product = ProductSerializer()
     recipe = RecipeSerializer()
 
